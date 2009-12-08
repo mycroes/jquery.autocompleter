@@ -19,11 +19,20 @@
 */
 
 /* attach to jquery function object */
-jQuery.fn.autocompleter = function() {
-	/* this now holds the jquery object */
+jQuery.fn.autocompleter = function(options) {
+	/*
+	 * this now holds the jquery object.
+	 * see also: http://docs.jquery.com/Plugins/Authoring
+	 */
 
-	this.dosomething();
+	/* extend the options with the default values (only sets if not set yet) */
+	options = jQuery.extend({
+			url: '',
+			minChars: 3
+	}, options);
+
+	// this.dosomething();
 	
-	/* see also: http://docs.jquery.com/Plugins/Authoring */
+	/* always return this */
 	return this;
 };

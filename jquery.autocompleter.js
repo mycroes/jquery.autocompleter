@@ -1,5 +1,5 @@
 /*
-   jquery.autocompleter: jQuery autocompletion plugin
+   jQuery.Autocompleter
    Copyright (C) 2009  Michael Croes <mycroes@gmail.com and
    Frank Groeneveld <frankgroeneveld@gmail.com>
 
@@ -17,3 +17,13 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+/* attach to jquery function object */
+jQuery.fn.autocompleter = function() {
+	/* this now holds the jquery object */
+
+	this.dosomething();
+	
+	/* see also: http://docs.jquery.com/Plugins/Authoring */
+	return this;
+};

@@ -25,13 +25,63 @@ jQuery.fn.autocompleter = function(options) {
 	 * see also: http://docs.jquery.com/Plugins/Authoring
 	 */
 
+	var input = this;
+
 	/* extend the options with the default values (only sets if not set yet) */
 	options = jQuery.extend({
-			url: '',
-			minChars: 3
+			/* default debug beforeSend */
+			beforeSend: function(xhr) {
+				console.log('before send');
+			},
+			/* default debug error */
+			error: function(xhr, textStatus, errorThrown) {
+				console.log(textStatus);
+				console.log(errorThrown);
+			},
+			/* use json by default */
+			dataType: 'json',
+			/* require at least 3 characters before doing a search */
+			minChars: 3,
+			/* set a default success handler */
+			success: handleData
 	}, options);
 
-	// this.dosomething();
+	/* default success handler for the ajax request */
+	function handleData(data, textStatus) {
+		var resultList;
+		/* is there a result list in the dom already? */
+		if (input.next().attr('class') == 'ac_results') {
+			/* use it */
+			resultList = input.next();
+			/* empty the list */
+			resultList.empty();
+		} else {
+			/* create a result list */
+			resultList = jQuery('<ul class="ac_results"></ul>');
+			/* add the list after the autocompleted element */
+			input.after(resultList);
+		}
+
+		/* for each of the results received */
+		jQuery(data).each(function() {
+			/* add it to the list */
+			resultList.append('<li>' + this.toString() + '</li>');
+		});
+	}
+
+	/* input changed handler */
+	function inputKeyUp(eventObject) {
+		/* if there are more character in the input box than minChars */
+		if (input.val().length >= options.minChars) {
+			/* set the query parameter for the url */
+			options.data = { q: input.val() };
+			/* do the actual request */
+			jQuery.ajax(options);
+		}
+	}
+
+	/* bind a function to the key up event of the input box */
+	input.keyup(inputKeyUp);
 	
 	/* always return this */
 	return this;

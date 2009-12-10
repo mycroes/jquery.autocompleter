@@ -46,6 +46,9 @@ jQuery.fn.autocompleter = function(options) {
 			success: handleData
 	}, options);
 
+	/* save the original url, because jquery.ajax modfies it */
+	var originalUrl = options.url;
+
 	/* default success handler for the ajax request */
 	function handleData(data, textStatus) {
 		var resultList;
@@ -75,6 +78,7 @@ jQuery.fn.autocompleter = function(options) {
 		if (input.val().length >= options.minChars) {
 			/* set the query parameter for the url */
 			options.data = { q: input.val() };
+			options.url = originalUrl;
 			/* do the actual request */
 			jQuery.ajax(options);
 		}

@@ -49,21 +49,24 @@ jQuery.fn.autocompleter = function(options) {
 	/* save the original url, because jquery.ajax modfies it */
 	var originalUrl = options.url;
 
-	/* default success handler for the ajax request */
-	function handleData(data, textStatus) {
-		var resultList;
-		/* is there a result list in the dom already? */
-		if (input.next().attr('class') == 'ac_results') {
-			/* use it */
-			resultList = input.next();
-			/* empty the list */
-			resultList.empty();
-		} else {
+	/* returns the result list and create one if needed */
+	function getResultList() {
+		/* should we create a result list in the dom? */
+		if (input.next().attr('class') != 'ac_results') {
 			/* create a result list */
 			resultList = jQuery('<ul class="ac_results"></ul>');
 			/* add the list after the autocompleted element */
 			input.after(resultList);
 		}
+
+		return input.next();
+	}
+
+	/* default success handler for the ajax request */
+	function handleData(data, textStatus) {
+		var resultList = getResultList();
+		/* empty the list */
+		resultList.empty();
 
 		/* for each of the results received */
 		jQuery(data).each(function() {
@@ -84,8 +87,17 @@ jQuery.fn.autocompleter = function(options) {
 		}
 	}
 
+	/* input lost focus */
+	function inputBlur(eventObject) {
+		/* remove it from the dom */
+		getResultList().remove();		
+	}
+
 	/* bind a function to the key up event of the input box */
 	input.keyup(inputKeyUp);
+
+	/* bind a function to the blur event of the input box */
+	input.blur(inputBlur);
 	
 	/* always return this */
 	return this;

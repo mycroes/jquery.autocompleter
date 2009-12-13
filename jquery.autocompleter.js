@@ -91,10 +91,10 @@ jQuery.fn.autocompleter = function(options) {
 		}
 
 		/* extend provided options with value */
-		jQuery.extend({q: el.val()}, options.data);
-	
+		options.data = jQuery.extend({q: el.val()}, options.data);
+			
 		/* Send the request */
-		var req = jQuery.ajax(options);
+		var req = jQuery.ajax(jQuery.extend({}, options));
 	}
 
 	/* Hide result list on blur */

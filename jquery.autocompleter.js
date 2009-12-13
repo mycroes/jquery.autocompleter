@@ -64,7 +64,7 @@ jQuery.fn.autocompleter = function(options) {
 
 	/* default success handler for the ajax request */
 	function handleData(data, textStatus) {
-		var resultList = getResultList();
+		var resultList = getResultList.call(this);
 		/* empty the list */
 		resultList.empty();
 
@@ -73,6 +73,8 @@ jQuery.fn.autocompleter = function(options) {
 			/* add it to the list */
 			resultList.append('<li>' + this.toString() + '</li>');
 		});
+
+		resultList.show();
 	}
 
 	/* KeyUp event handler. */
@@ -92,6 +94,9 @@ jQuery.fn.autocompleter = function(options) {
 
 		/* extend provided options with value */
 		options.data = jQuery.extend({q: el.val()}, options.data);
+		options.success = function(data, textStatus) {
+			handleData.call(el, data, textStatus);
+		};
 			
 		/* Send the request */
 		var req = jQuery.ajax(jQuery.extend({}, options));
@@ -100,7 +105,7 @@ jQuery.fn.autocompleter = function(options) {
 	/* Hide result list on blur */
 	function blur(e) {
 		/* Hide the result list */
-		jQuery(bind(this, getResultList)).hide();
+		jQuery(getResultList.call(this)).hide();
 		
 		/* Don't prevent other handlers. */
 		return true;

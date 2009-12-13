@@ -51,15 +51,18 @@ jQuery.fn.autocompleter = function(options) {
 
 	/* returns the result list and create one if needed */
 	function getResultList() {
-		/* should we create a result list in the dom? */
-		if (input.next().attr('class') != 'ac_results') {
-			/* create a result list */
-			resultList = jQuery('<ul class="ac_results"></ul>');
-			/* add the list after the autocompleted element */
-			input.after(resultList);
+		/* get result list */
+		var res = jQuery(this).next();
+
+		/* Check if we have the list */
+		if (!res.length || !res.hasClass('ac_results')) {
+			/* Not yet, create it */
+			res = jQuery('<ul class="ac_results"></ul>')
+					.insertAfter(this);
 		}
 
-		return input.next();
+		/* Return the result list */
+		return res;
 	}
 
 	/* default success handler for the ajax request */
@@ -75,30 +78,44 @@ jQuery.fn.autocompleter = function(options) {
 		});
 	}
 
-	/* input changed handler */
-	function inputKeyUp(eventObject) {
-		/* if there are more character in the input box than minChars */
-		if (input.val().length >= options.minChars) {
-			/* set the query parameter for the url */
-			options.data = { q: input.val() };
-			options.url = originalUrl;
-			/* do the actual request */
-			jQuery.ajax(options);
+	/* KeyUp event handler. */
+	function keyUp(e) {
+		/* Get the input object */
+		var el = jQuery(this);
+		
+		/* Check minimum character */
+		if (el.val().length < options.minChars) {
+			return true;
 		}
+		
+		/* Check if value is changed */
+		if (el.data('_ac_val') == el.val()) {
+			return true;
+		}
+
+		/* extend provided options with value */
+		options.data.extend({q: input.val()}}, options.data);
+		options.url = originalUrl;
+
+		/* Send the request */
+		var req = jqUery.ajax(options);
 	}
 
-	/* input lost focus */
-	function inputBlur(eventObject) {
-		/* remove it from the dom */
-		getResultList().remove();		
+	/* Hide result list on blur */
+	function blur(e) {
+		/* Hide the result list */
+		jQuery(bind(this, getResultList)).hide();
+		
+		/* Don't prevent other handlers. */
+		return true;
 	}
 
 	/* bind a function to the key up event of the input box */
-	input.keyup(inputKeyUp);
+	input.keyup(keyUp);
 
 	/* bind a function to the blur event of the input box */
-	input.blur(inputBlur);
+	input.blur(blur);
 	
-	/* always return this */
+	/* always return jQuery (this) */
 	return this;
 };

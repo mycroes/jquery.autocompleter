@@ -36,6 +36,8 @@ jQuery.fn.autocompleter = function(options) {
 				console.log(textStatus);
 				console.log(errorThrown);
 			},
+			/* Default data */
+			data: {},
 			/* use json by default */
 			dataType: 'json',
 			/* require at least 3 characters before doing a search */
@@ -92,11 +94,11 @@ jQuery.fn.autocompleter = function(options) {
 		}
 
 		/* extend provided options with value */
-		options.data.extend({q: el.val()}}, options.data);
+		jQuery.extend({q: el.val()}, options.data);
 		options.url = originalUrl;
 
 		/* Send the request */
-		var req = jqUery.ajax(options);
+		var req = jQuery.ajax(options);
 	}
 
 	/* Hide result list on blur */

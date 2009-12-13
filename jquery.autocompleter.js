@@ -25,8 +25,6 @@ jQuery.fn.autocompleter = function(options) {
 	 * see also: http://docs.jquery.com/Plugins/Authoring
 	 */
 
-	var input = this;
-
 	/* extend the options with the default values (only sets if not set yet) */
 	options = jQuery.extend({
 			/* default debug beforeSend */
@@ -44,7 +42,7 @@ jQuery.fn.autocompleter = function(options) {
 			minChars: 3,
 			/* set a default success handler */
 			success: handleData
-	}, options);
+	}, options || {});
 
 	/* save the original url, because jquery.ajax modfies it */
 	var originalUrl = options.url;
@@ -94,7 +92,7 @@ jQuery.fn.autocompleter = function(options) {
 		}
 
 		/* extend provided options with value */
-		options.data.extend({q: input.val()}}, options.data);
+		options.data.extend({q: el.val()}}, options.data);
 		options.url = originalUrl;
 
 		/* Send the request */
@@ -111,10 +109,10 @@ jQuery.fn.autocompleter = function(options) {
 	}
 
 	/* bind a function to the key up event of the input box */
-	input.keyup(keyUp);
+	this.keyup(keyUp);
 
 	/* bind a function to the blur event of the input box */
-	input.blur(blur);
+	this.blur(blur);
 	
 	/* always return jQuery (this) */
 	return this;

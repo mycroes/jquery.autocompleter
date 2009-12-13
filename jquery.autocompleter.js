@@ -69,7 +69,7 @@ jQuery.fn.autocompleter = function(options) {
 		resultList.empty();
 
 		/* for each of the results received */
-		jQuery(data).each(function() {
+		jQuery(data.matches).each(function() {
 			/* add it to the list */
 			resultList.append('<li>' + this.toString() + '</li>');
 		});
@@ -92,14 +92,17 @@ jQuery.fn.autocompleter = function(options) {
 			return true;
 		}
 
-		/* extend provided options with value */
-		options.data = jQuery.extend({q: el.val()}, options.data);
-		options.success = function(data, textStatus) {
+		/* Store data so we can check if it's changed. */
+		el.data('_ac_val', el.val());
+
+		/* Do a deep extend of options */
+		var sendOpts = jQuery.extend(true, {}, options, {data: {q: el.val()}});
+		sendOpts.success = function(data, textStatus) {
 			handleData.call(el, data, textStatus);
 		};
-			
+
 		/* Send the request */
-		var req = jQuery.ajax(jQuery.extend({}, options));
+		var req = jQuery.ajax(sendOpts);
 	}
 
 	/* Hide result list on blur */

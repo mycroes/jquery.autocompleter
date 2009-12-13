@@ -46,9 +46,6 @@ jQuery.fn.autocompleter = function(options) {
 			success: handleData
 	}, options || {});
 
-	/* save the original url, because jquery.ajax modfies it */
-	var originalUrl = options.url;
-
 	/* returns the result list and create one if needed */
 	function getResultList() {
 		/* get result list */
@@ -95,8 +92,7 @@ jQuery.fn.autocompleter = function(options) {
 
 		/* extend provided options with value */
 		jQuery.extend({q: el.val()}, options.data);
-		options.url = originalUrl;
-
+	
 		/* Send the request */
 		var req = jQuery.ajax(options);
 	}
